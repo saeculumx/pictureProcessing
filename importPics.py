@@ -3,13 +3,15 @@ import numpy as np
 from PIL import Image
 import matplotlib
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 matplotlib.use('TkAgg')
 
 
-def img_bw(path):
+def img_bw(path, capital):
     """
     Function import pictures and turn into black/white picture for more processing
+    :param capital: if the text is capital
     :param path: path to the picture
     :return: picture save in middle folder
     """
@@ -18,9 +20,12 @@ def img_bw(path):
 
     image_r = Image.open(path)
     b = image_r.filename.split("/")[-1]
-    print(">>IMP<< Reading {}".format(b))
+    font = image_r.filename.split("/")[-2]
+    fontname = font.split(".")[-2]
+    print(">>IMP<< Reading {}".format(b + "//" + fontname))
     img_grey = image_r.convert('L')
-    img_grey.save("middle/grey_" + b)
+    Path("middle/"+capital).mkdir(parents=True, exist_ok=True)
+    img_grey.save("middle/"+capital+"/grey_" + b)
     print(">>IMP<< Picture {} Has been Processed (Grey)".format(b))
 
     """B&W Picture"""
@@ -46,18 +51,22 @@ def img_bw(path):
         plt.xticks([]), plt.yticks([])
     th_pic = Image.fromarray(th1)
     th_avg_pic = Image.fromarray(th3)
-    th_pic.save("middle/thd_" + b)
-    th_avg_pic.save("middle/thd_avg_" + b)
+    th_pic.save("middle/"+capital+"/thd_" + b)
+    th_avg_pic.save("middle/"+capital+"/thd_avg_" + b)
     print(">>IMP<< Picture {} Has been Processed (Two)".format(b))
-    plt.show()
+    # plt.show()
     """Eroded"""
-    image_f = cv2.imread("middle/thd_" + b)
+    image_f = cv2.imread("middle/"+capital+"/thd_" + b)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
     eroded_img = cv2.erode(th1, kernel)
-    cv2.imwrite("middle/eroded {}".format(b), eroded_img)
+    cv2.imwrite("middle/"+capital+"/eroded_{}".format(b), eroded_img)
     eroded_img_dim = 255 - eroded_img
     contours, hierarchy = cv2.findContours(eroded_img_dim, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    color = (255,255,255)
+    filename = b.split("_")[-1]
+    print(">>IMP<< point at: " + "final/{}".format(fontname) + "/" + capital)
+    Path("final/{}".format(fontname) + "/" + capital).mkdir(parents=True, exist_ok=True)
+    Path("result/" + capital).mkdir(parents=True, exist_ok=True)
+    color = (255, 255, 255)
     x_a = []
     t_a = []
     i = 1
@@ -69,10 +78,8 @@ def img_bw(path):
         temp = image_f[y:(y + h), x:(x + w)]
         x_a.append(x)
         t_a.append(temp)
-        print(hierarchy)
-        cv2.imwrite("result/res_{}_".format(i) + b, temp)
-        cv2.imwrite("final/f_" + b, temp)
-        cv2.imwrite("middle/parameter_{}_".format(i) + b, image_f)
+        # print(hierarchy)
+        cv2.imwrite("result/"+capital+"/res_{}_".format(i) + b, temp)
+        cv2.imwrite("final/{}".format(fontname) + "/" + capital + "/" + b, temp)
+        cv2.imwrite("middle/"+capital+"/parameter_{}_".format(i) + b, image_f)
         i = i + 1
-
-    # cv2.imwrite("final/" + str(x_a[-2]) + b, t_a[-1])
