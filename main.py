@@ -6,9 +6,10 @@ from string import ascii_uppercase as ulc
 
 if __name__ == '__main__':
     filetype = ".png"
-    font = "BRUSHSCI.TTF"
+    font = "CALIBRI.TTF"
+    concatenateImages.words_to_picture(font, "For Example This is Aompqg")
 
-    concatenateImages.words_to_picture(font, "a  ASf  edesw")
+
     def generate_cut():
         for i in ulc:
             text = i
@@ -23,3 +24,5 @@ if __name__ == '__main__':
             filename = text + "_" + fontname + filetype
             fileGenerator.generate_pics(128, 128, text, font, 90, capital="low")
             importPics.img_bw("generate/{}".format(font + "_low" + "/" + filename), capital="low")
+
+    # generate_cut()
