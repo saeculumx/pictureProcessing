@@ -17,15 +17,17 @@ def img_bw(path, capital):
     """
 
     """Grey Picture"""
+    """Grey Picture"""
 
     image_r = Image.open(path)
     b = image_r.filename.split("/")[-1]
     font = image_r.filename.split("/")[-2]
-    fontname = font.split(".")[-2]
+    # print(b,font)
+    fontname = font.split("_")[0]
     print(">>IMP<< Reading {}".format(b + "//" + fontname))
     img_grey = image_r.convert('L')
-    Path("middle/"+capital).mkdir(parents=True, exist_ok=True)
-    img_grey.save("middle/"+capital+"/grey_" + b)
+    Path("middle/" + capital).mkdir(parents=True, exist_ok=True)
+    img_grey.save("middle/" + capital + "/grey_" + b)
     print(">>IMP<< Picture {} Has been Processed (Grey)".format(b))
 
     """B&W Picture"""
@@ -51,15 +53,15 @@ def img_bw(path, capital):
         plt.xticks([]), plt.yticks([])
     th_pic = Image.fromarray(th1)
     th_avg_pic = Image.fromarray(th3)
-    th_pic.save("middle/"+capital+"/thd_" + b)
-    th_avg_pic.save("middle/"+capital+"/thd_avg_" + b)
+    th_pic.save("middle/" + capital + "/thd_" + b)
+    th_avg_pic.save("middle/" + capital + "/thd_avg_" + b)
     print(">>IMP<< Picture {} Has been Processed (Two)".format(b))
     # plt.show()
     """Eroded"""
-    image_f = cv2.imread("middle/"+capital+"/thd_" + b)
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
+    image_f = cv2.imread("middle/" + capital + "/thd_" + b)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 50))
     eroded_img = cv2.erode(th1, kernel)
-    cv2.imwrite("middle/"+capital+"/eroded_{}".format(b), eroded_img)
+    cv2.imwrite("middle/" + capital + "/eroded_{}".format(b), eroded_img)
     eroded_img_dim = 255 - eroded_img
     contours, hierarchy = cv2.findContours(eroded_img_dim, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     filename = b.split("_")[-1]
@@ -79,7 +81,7 @@ def img_bw(path, capital):
         x_a.append(x)
         t_a.append(temp)
         # print(hierarchy)
-        cv2.imwrite("result/"+capital+"/res_{}_".format(i) + b, temp)
+        cv2.imwrite("result/" + capital + "/res_{}_".format(i) + b, temp)
         cv2.imwrite("final/{}".format(fontname) + "/" + capital + "/" + b, temp)
-        cv2.imwrite("middle/"+capital+"/parameter_{}_".format(i) + b, image_f)
+        cv2.imwrite("middle/" + capital + "/parameter_{}_".format(i) + b, image_f)
         i = i + 1

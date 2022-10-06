@@ -1,3 +1,5 @@
+import string
+
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -15,6 +17,9 @@ def words_to_picture(font, word):
     :param word: String word
     :return: Picture
     """
+    full_punc = 0
+    blank_area_t = 0
+    blank_area_b = 0
     word = word
     fontname = font.split(".")[-2]
     word_capital_array = []
@@ -27,13 +32,17 @@ def words_to_picture(font, word):
         print(w, fontname)
         word_array.append(w)
         if w == " ":
-            a = np.ones([128, 64, 3]) * 255
+            a = np.ones([128, 32, 3]) * 255
             cv2.imwrite("blank.png", a)
             picture_array.append(a)
         elif w.isupper():
             word_capital_array.append(w)
             upper_img = cv2.imread("final/{}".format(fontname + "/capital/" + w + "_" + fontname + ".png"))
             picture_array.append(upper_img)
+        elif w in string.punctuation:
+            word_capital_array.append(w)
+            punc_img = cv2.imread("final/{}".format("punc" + "/capital/" + str(ord(w)) + "_" + "punc" + ".png"))
+            picture_array.append(punc_img)
         else:
             word_low_array.append(w)
             low_img = cv2.imread("final/{}".format(fontname + "/low/" + w + "_" + fontname + ".png"))
@@ -57,6 +66,26 @@ def words_to_picture(font, word):
             print(margin + height_loss)
             blank_area_t = np.ones([margin, width, 3]) * 255
             blank_area_b = np.ones([128 - height - margin, width, 3]) * 255
+        elif word[i] in string.punctuation:
+            if width < 32:
+                margin_l = round(32 - width / 2)
+                margin_r = 32 - margin_l
+                blank_area_l = np.ones([height, margin_l, 3]) * 255
+                blank_area_r = np.ones([height, margin_r, 3]) * 255
+                pic = np.hstack((blank_area_l, pic, blank_area_r))
+                height = pic.shape[0]
+                width = pic.shape[1]
+                height_loss = 15
+                blank_area_t = np.ones([128 - height - height_loss, width, 3]) * 255
+                blank_area_b = np.ones([height_loss, width, 3]) * 255
+            elif height<110:
+                height_loss = 15
+                blank_area_t = np.ones([128 - height - height_loss, width, 3]) * 255
+                blank_area_b = np.ones([height_loss, width, 3]) * 255
+            else:
+                height_loss = 0
+                blank_area_t = np.ones([128 - height - height_loss, width, 3]) * 255
+                blank_area_b = np.ones([height_loss, width, 3]) * 255
         else:
             height_loss = 25
             blank_area_t = np.ones([128 - height - height_loss, width, 3]) * 255
