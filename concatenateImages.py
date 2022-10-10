@@ -109,9 +109,26 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit):
         return stack
 
     def v_page_stack(array):
+        i = 0
         full_array = []
+        label_array = []
         full_pic = np.ones([0, size_limit, 3]) * 255
         for ele in array:
+            height = ele.shape[0]
+            width = ele.shape[1]
+            if label_array == []:
+                label_array.append([[0, 0],
+                                    [0, width],
+                                    [height, width],
+                                    [height, 0]])
+                i += 1
+            else:
+                lab = label_array[i - 1]
+                label_array.append([[0, 0],
+                                    [0, width],
+                                    [height, width],
+                                    [height, 0]])
+                i += 1
             if ele.shape[1] < size_limit:
                 width_loss = size_limit - ele.shape[1]
                 width_patch = np.ones([ele.shape[0], width_loss, 3]) * 255
