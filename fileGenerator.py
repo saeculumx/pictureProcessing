@@ -22,7 +22,7 @@ def generate_pics(height, width, text, font, f_size, capital):
     f_size = f_size
 
     if font == "punc":
-        text_font = ImageFont.truetype("arial.ttf", size=64)
+        text_font = ImageFont.truetype("arial.ttf", size=f_size)
         text_chr = chr(int(text))
         base_img = Image.new('RGB', (width, height), color='White')
         draw_img = ImageDraw.Draw(base_img)

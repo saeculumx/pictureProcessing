@@ -11,7 +11,7 @@ if __name__ == '__main__':
     font = "arial.ttf"
 
 
-    concatenateImages.words_to_picture(font, "This is a: *[Example]* ,.?")
+    # concatenateImages.words_to_picture(font, "This is a: *[Example]* ,.?")
 
     def generate_cut():
         for punc in string.punctuation:
@@ -38,4 +38,5 @@ if __name__ == '__main__':
             importPics.img_bw("generate/{}".format(font + "_low" + "/" + filename), capital="low")
 
 
-    # generate_cut()
+    #generate_cut()
+    concatenateImages.words_to_picture(font, "This is a:\n *[Example]* ,.?")
