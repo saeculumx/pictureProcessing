@@ -31,26 +31,30 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit):
     word_array = []
     picture_array = []
     width_array = []
-    stack = np.ones([128, 70, 3]) * 255
-    for w in word:
-        print(w, fontname)
-        word_array.append(w)
-        if w == " ":
-            a = np.ones([128, 32, 3]) * 255
-            cv2.imwrite("blank.png", a)
-            picture_array.append(a)
-        elif w.isupper():
-            word_capital_array.append(w)
-            upper_img = cv2.imread("final/{}".format(fontname + "/capital/" + w + "_" + fontname + ".png"))
-            picture_array.append(upper_img)
-        elif w in string.punctuation:
-            word_capital_array.append(w)
-            punc_img = cv2.imread("final/{}".format("punc" + "/capital/" + str(ord(w)) + "_" + "punc" + ".png"))
-            picture_array.append(punc_img)
-        else:
-            word_low_array.append(w)
-            low_img = cv2.imread("final/{}".format(fontname + "/low/" + w + "_" + fontname + ".png"))
-            picture_array.append(low_img)
+    stack = np.ones([128, 0, 3]) * 255
+
+    def split_word(word):
+        for w in word:
+            print(w, fontname)
+            word_array.append(w)
+            if w == " ":
+                a = np.ones([128, 32, 3]) * 255
+                cv2.imwrite("blank.png", a)
+                picture_array.append(a)
+            elif w.isupper():
+                word_capital_array.append(w)
+                upper_img = cv2.imread("final/{}".format(fontname + "/capital/" + w + "_" + fontname + ".png"))
+                picture_array.append(upper_img)
+            elif w in string.punctuation:
+                word_capital_array.append(w)
+                punc_img = cv2.imread("final/{}".format("punc" + "/capital/" + str(ord(w)) + "_" + "punc" + ".png"))
+                picture_array.append(punc_img)
+            else:
+                word_low_array.append(w)
+                low_img = cv2.imread("final/{}".format(fontname + "/low/" + w + "_" + fontname + ".png"))
+                picture_array.append(low_img)
+
+    split_word(word)
 
     i = 0
     for pic in picture_array:
@@ -99,11 +103,9 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit):
         full = np.vstack((blank_area_t, pic, blank_area_b))
         # print("Full: " + str(full.shape))
         pre_stack = np.hstack((stack, full))
-        if pre_stack.shape[1]>size_limit:
+        if pre_stack.shape[1] > size_limit:
             print("Exceeds")
-            # stack = np.hstack((stack, full))
-            remaining_array = np.array_split(np.array(picture_array),i,axis=0)
-            print(len(remaining_array))
+            remaining_array = picture_array[i:len(picture_array) + 1]
             break
         else:
             stack = np.hstack((stack, full))
