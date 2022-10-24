@@ -40,4 +40,4 @@ if __name__ == '__main__':
 
     # generate_cut()
 
-    concatenateImages.words_to_picture(font, "There will be plenty of systems, both as part of the Expansion and the free update that comes along with it. For Flavor Packs we re also going to aim to have systemic content as part of the formula Fate of Iberia proved that a combination of flavor (events, clothes, illustrations, etc.) and a central systemic feature (the struggle) served to elevate the experience as a whole.", font_colour, "bkg.png", 1500)
+    concatenateImages.words_to_picture(font, "There will be plenty of systems, both as part of the Expansion and the free update that comes along with it.", font_colour, "bkg.png", 800)
