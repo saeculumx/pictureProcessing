@@ -11,6 +11,8 @@ if __name__ == '__main__':
     font = "arial.ttf"
     font_colour = (255, 255, 255)
     bkg_colour = (42, 56, 67)
+    padding = [50, 50, 50, 50]  # top,bottom,left,right
+
 
     def generate_cut():
         for punc in string.punctuation:
@@ -40,4 +42,6 @@ if __name__ == '__main__':
 
     # generate_cut()
 
-    concatenateImages.words_to_picture(font, "There will be plenty of systems, both as part of the Expansion and the free update that comes along with it.", font_colour, "bkg.png", 800)
+    concatenateImages.words_to_picture(font,
+                                       "SDIGHd rgasfewiuh asdfawfuhrrgbiu [pasdfoak[gwagrk dng a;oe nts;igr;gns;ogrght",
+                                       font_colour, "bkg.png", 800, padding)

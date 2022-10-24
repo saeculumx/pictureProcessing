@@ -12,9 +12,10 @@ from numpy import ceil
 matplotlib.use('TkAgg')
 
 
-def words_to_picture(font, word, font_colour, bkg_src, size_limit):
+def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding):
     """
     Make words into picture, fully auto
+    :param padding: TBLR
     :param size_limit: Size limit for the picture
     :param bkg_src:  background src for pic
     :param font_colour: font colour
@@ -112,10 +113,13 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit):
         i = 0
         full_array = []
         label_array = []
-        full_pic = np.ones([0, size_limit, 3]) * 255
+        full_pic = np.ones([padding[0], size_limit + padding[2] + padding[3], 3]) * 255
+        full_pic_bot = np.ones([padding[1], size_limit + padding[2] + padding[3], 3]) * 255
         for ele in array:
             height = ele.shape[0]
             width = ele.shape[1]
+            pad_left = np.ones([height, padding[2], 3]) * 255
+            pad_right = np.ones([height, padding[3], 3]) * 255
             if not label_array:
                 label_array.append([[0, 0],
                                     [width, 0],
@@ -132,14 +136,16 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit):
             if ele.shape[1] < size_limit:
                 width_loss = size_limit - ele.shape[1]
                 width_patch = np.ones([ele.shape[0], width_loss, 3]) * 255
-                full = np.hstack((ele, width_patch))
+                full = np.hstack((pad_left, ele, width_patch, pad_right))
                 full_array.append(full)
             else:
                 cropped = ele[0:ele.shape[0], 0:size_limit]
                 print(cropped.shape)
+                cropped = np.hstack((pad_left, cropped, pad_right))
                 full_array.append(cropped)
         for fs in full_array:
             full_pic = np.vstack((full_pic, fs))
+        full_pic = np.vstack((full_pic, full_pic_bot))
         print(label_array)
         Path("txt").mkdir(parents=True, exist_ok=True)
         open('txt/outcome.txt', 'w').close()
@@ -149,8 +155,9 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit):
             with open('txt/outcome.txt', 'a') as f:
                 f.write(str(lbu))
                 f.write('\n')
-        cv2.imshow("full.png", full_pic)
-        cv2.waitKey(0)
+        # cv2.imshow("full.png", full_pic)
+        # cv2.waitKey(0)
+        return full_pic
 
     # cv2.imshow('image', final_stack)
     # cv2.waitKey(0)
@@ -211,35 +218,38 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit):
             # cv2.imshow("pic", pic)
             # cv2.waitKey(0)
             i += 1
-        v_page_stack(final_pic_array, sep_wod_array)
+        return v_page_stack(final_pic_array, sep_wod_array)
 
     def apply_bkg(stack):
         change_colour = Image.fromarray(stack.astype('uint8'), 'RGB')
         cg_width, cg_height = change_colour.size
         bkg_src_p = Image.open(bkg_src)
+        for_process = cv2.imread(bkg_src)
         if bkg_src_p.width < cg_width or bkg_src_p.height < cg_height:
+            dim = (cg_width, cg_height)
+            for_process = cv2.resize(for_process, dim, interpolation=cv2.INTER_AREA)
+            bkg_src_p = Image.fromarray(np.uint8(for_process))
             print("Background picture is not big enough, required ", cg_width, cg_height)
-        else:
-            for wd in range(cg_width):
-                for hd in range(cg_height):
-                    current_color = change_colour.getpixel((wd, hd))
-                    if current_color == (255, 255, 255):
-                        b_current_color = bkg_src_p.getpixel((wd, hd))
-                        change_colour.putpixel((wd, hd), b_current_color)
-                    elif current_color == (0, 0, 0):
-                        change_colour.putpixel((wd, hd), font_colour)
-            colour = cv2.cvtColor(np.array(change_colour), cv2.COLOR_RGB2BGR)
-            cv2.imshow("pic", colour)
-            cv2.waitKey(0)
-            return change_colour
+        for wd in range(cg_width):
+            for hd in range(cg_height):
+                current_color = change_colour.getpixel((wd, hd))
+                if current_color == (255, 255, 255):
+                    b_current_color = bkg_src_p.getpixel((wd, hd))
+                    change_colour.putpixel((wd, hd), b_current_color)
+                elif current_color == (0, 0, 0):
+                    change_colour.putpixel((wd, hd), font_colour)
+        colour = cv2.cvtColor(np.array(change_colour), cv2.COLOR_RGB2BGR)
+        cv2.imshow("pic", colour)
+        cv2.waitKey(0)
+        return change_colour
 
     # v_page_array = []
     # v_page_array.append(apply_bkg(final_stack))
     # v_page_array.append(apply_bkg(after_stack))
 
     final_stack = pic_process(picture_array, word)
-    multi_init(final_stack)
-    apply_bkg(final_stack)
+    com_stack = multi_init(final_stack)
+    apply_bkg(com_stack)
 
     # v_page_stack(v_page_array)
     # pre_stack = np.hstack((stack, full))
