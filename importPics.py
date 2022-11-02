@@ -23,8 +23,11 @@ def img_bw(path, capital):
     b = image_r.filename.split("/")[-1]
     font = image_r.filename.split("/")[-2]
     # print(b,font)
-    fontname = font.split("_")[0]
-    print(">>IMP<< Reading {}".format(b + "//" + fontname))
+    if "." in font:
+        fontname = font.split(".")[0]
+    else:
+        fontname = font.split("_")[0]
+    print(">>SMP<< Reading {}".format(b + "//" + fontname + "//" + font))
     img_grey = image_r.convert('L')
     Path("middle/" + capital).mkdir(parents=True, exist_ok=True)
     img_grey.save("middle/" + capital + "/grey_" + b)
@@ -83,5 +86,6 @@ def img_bw(path, capital):
         # print(hierarchy)
         cv2.imwrite("result/" + capital + "/res_{}_".format(i) + b, temp)
         cv2.imwrite("final/{}".format(fontname) + "/" + capital + "/" + b, temp)
+        # print(">>RES<< ","final/{}".format(fontname) + "/" + capital + "/" + b)
         cv2.imwrite("middle/" + capital + "/parameter_{}_".format(i) + b, image_f)
         i = i + 1

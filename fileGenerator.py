@@ -8,9 +8,10 @@ from pathlib import Path
 matplotlib.use('TkAgg')
 
 
-def generate_pics(height, width, text, font, f_size, capital):
+def generate_pics(height, width, text, font, f_size, capital, form=None):
     """
     This Function generate pictures with english letters
+    :param form: format either punc/number
     :param capital: if the word is capital
     :param height: height og the pic
     :param width: width of the pic
@@ -21,7 +22,7 @@ def generate_pics(height, width, text, font, f_size, capital):
     """
     f_size = f_size
 
-    if font == "punc":
+    if form == "punc":
         text_font = ImageFont.truetype("arial.ttf", size=f_size)
         text_chr = chr(int(text))
         base_img = Image.new('RGB', (width, height), color='White')
@@ -44,6 +45,7 @@ def generate_pics(height, width, text, font, f_size, capital):
         y_text = (height - text_height) / 2
         draw_img.text((x_text, y_text), text, font=text_font, fill=(0, 0, 0))
         Path("generate/{}".format(font + "_" + capital)).mkdir(parents=True, exist_ok=True)
+        print(font)
         fontname = font.split(".")[-2]
-        print(">>GEN<< File generated at : generate/" + font + capital + "/{}.png".format(text + "_" + fontname))
+        print(">>GEN<< File generated at : generate/" + font + "_" + capital + "/{}.png".format(text + "_" + fontname))
         base_img.save("generate/" + font + "_" + capital + "/{}.png".format(text + "_" + fontname))

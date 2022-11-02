@@ -12,9 +12,10 @@ from numpy import ceil
 matplotlib.use('TkAgg')
 
 
-def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding):
+def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, filename=None):
     """
     Make words into picture, fully auto
+    :param filename: Filename for massive production
     :param padding: TBLR
     :param size_limit: Size limit for the picture
     :param bkg_src:  background src for pic
@@ -32,6 +33,7 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding):
     word_array = []
     picture_array = []
     width_array = []
+    number_array = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
     def split_word(word_str):
         print(">>CON<< Word: ", word_str, " | ", fontname, " | ", len(word_str))
@@ -42,14 +44,22 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding):
                 cv2.imwrite("blank.png", a)
                 picture_array.append(a)
             elif w.isupper():
+                # print("Upper ", "final/{}".format(fontname + "/capital/" + w + "_" + fontname + ".png"))
                 word_capital_array.append(w)
                 upper_img = cv2.imread("final/{}".format(fontname + "/capital/" + w + "_" + fontname + ".png"))
                 picture_array.append(upper_img)
             elif w in string.punctuation:
+                # print("Punc ", "final/{}".format("punc" + "/capital/" + str(ord(w)) + "_" + "punc" + ".png"))
                 word_capital_array.append(w)
                 punc_img = cv2.imread("final/{}".format("punc" + "/capital/" + str(ord(w)) + "_" + "punc" + ".png"))
                 picture_array.append(punc_img)
+            elif w in number_array:
+                # print("Numbers ", "final/{}".format(fontname + "/capital/" + w + "_" + fontname + ".png"))
+                word_capital_array.append(w)
+                upper_img = cv2.imread("final/{}".format(fontname + "/capital/" + w + "_" + fontname + ".png"))
+                picture_array.append(upper_img)
             else:
+                # print("Others ", "final/{}".format(fontname + "/low/" + w + "_" + fontname + ".png"))
                 word_low_array.append(w)
                 low_img = cv2.imread("final/{}".format(fontname + "/low/" + w + "_" + fontname + ".png"))
                 picture_array.append(low_img)
@@ -147,17 +157,29 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding):
             full_pic = np.vstack((full_pic, fs))
         full_pic = np.vstack((full_pic, full_pic_bot))
         print(label_array)
-        Path("txt").mkdir(parents=True, exist_ok=True)
-        open('txt/outcome.txt', 'w').close()
-        for lbu in label_array:
-            lbu = str(lbu).replace('[', '').replace(']', '').replace('\'', '').replace('\"', '')
-            lbu = str(lbu).replace(" ", "")
-            with open('txt/outcome.txt', 'a') as f:
-                f.write(str(lbu))
-                f.write('\n')
-        # cv2.imshow("full.png", full_pic)
-        # cv2.waitKey(0)
-        return full_pic
+        Path("txt/{}".format(fontname)).mkdir(parents=True, exist_ok=True)
+        if filename == "":
+            open('txt/outcome.txt', 'w').close()
+            for lbu in label_array:
+                # lbu = str(lbu).replace('[', '').replace(']', '').replace('\'', '').replace('\"', '')
+                # lbu = str(lbu).replace(" ", "")
+                with open('txt/outcome.txt', 'a') as f:
+                    f.write(str(lbu))
+                    f.write('\n')
+            # cv2.imshow("full.png", full_pic)
+            # cv2.waitKey(0)
+            return full_pic
+        else:
+            open("txt/{}/".format(fontname) + "{}.txt".format(filename), 'w').close()
+            for lbu in label_array:
+                # lbu = str(lbu).replace('[', '').replace(']', '').replace('\'', '').replace('\"', '')
+                # lbu = str(lbu).replace(" ", "")
+                with open("txt/{}/".format(fontname) + "{}.txt".format(filename), 'a') as f:
+                    f.write(str(lbu))
+                    f.write('\n')
+            # cv2.imshow("full.png", full_pic)
+            # cv2.waitKey(0)
+            return full_pic
 
     # cv2.imshow('image', final_stack)
     # cv2.waitKey(0)
@@ -170,7 +192,6 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding):
         i = 0
         for pic in picture_array:
             p_wid = pic.shape[1]
-
             if sum + p_wid > size_limit:
                 indicators.append(i)
                 sum -= sum
@@ -198,11 +219,14 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding):
                 sep_wod_array.append(sp_word)
                 i += 1
         # print("sep_array: ", indicators[z - 1], f - 1)
-        ind_arr = picture_array[indicators[z - 1]:f - 1]
-        sep_array.append(ind_arr)
-        sp_word = word[indicators[z - 1]:f - 1]
-        sep_wod_array.append(sp_word)
-
+        if z != 0:
+            ind_arr = picture_array[indicators[z - 1]:f - 1]
+            sep_array.append(ind_arr)
+            sp_word = word[indicators[z - 1]:f - 1]
+            sep_wod_array.append(sp_word)
+        else:
+            sep_array.append(picture_array)
+            sep_wod_array.append(word)
         print("len: sep_array: ", len(sep_array))
         print("indicators: ", indicators)
         print("stack_sum: ", fsum, stack.shape[1])
@@ -221,27 +245,45 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding):
         return v_page_stack(final_pic_array, sep_wod_array)
 
     def apply_bkg(stack):
-        change_colour = Image.fromarray(stack.astype('uint8'), 'RGB')
-        cg_width, cg_height = change_colour.size
-        bkg_src_p = Image.open(bkg_src)
-        for_process = cv2.imread(bkg_src)
-        if bkg_src_p.width < cg_width or bkg_src_p.height < cg_height:
-            dim = (cg_width, cg_height)
-            for_process = cv2.resize(for_process, dim, interpolation=cv2.INTER_AREA)
-            bkg_src_p = Image.fromarray(np.uint8(for_process))
-            print("Background picture is not big enough, required ", cg_width, cg_height)
-        for wd in range(cg_width):
-            for hd in range(cg_height):
-                current_color = change_colour.getpixel((wd, hd))
-                if current_color == (255, 255, 255):
-                    b_current_color = bkg_src_p.getpixel((wd, hd))
-                    change_colour.putpixel((wd, hd), b_current_color)
-                elif current_color == (0, 0, 0):
-                    change_colour.putpixel((wd, hd), font_colour)
-        colour = cv2.cvtColor(np.array(change_colour), cv2.COLOR_RGB2BGR)
-        cv2.imshow("pic", colour)
-        cv2.waitKey(0)
-        return change_colour
+        if bkg_src != "":
+            change_colour = Image.fromarray(stack.astype('uint8'), 'RGB')
+            cg_width, cg_height = change_colour.size
+            bkg_src_p = Image.open(bkg_src)
+            for_process = cv2.imread(bkg_src)
+            if bkg_src_p.width < cg_width or bkg_src_p.height < cg_height:
+                dim = (cg_width, cg_height)
+                for_process = cv2.resize(for_process, dim, interpolation=cv2.INTER_AREA)
+                bkg_src_p = Image.fromarray(np.uint8(for_process))
+                print("Background picture is not big enough, required ", cg_width, cg_height)
+            for wd in range(cg_width):
+                for hd in range(cg_height):
+                    current_color = change_colour.getpixel((wd, hd))
+                    if current_color == (255, 255, 255):
+                        b_current_color = bkg_src_p.getpixel((wd, hd))
+                        change_colour.putpixel((wd, hd), b_current_color)
+                    elif current_color == (0, 0, 0):
+                        change_colour.putpixel((wd, hd), font_colour)
+            colour = cv2.cvtColor(np.array(change_colour), cv2.COLOR_RGB2BGR)
+            # cv2.imshow("pic", colour)
+            # cv2.waitKey(0)
+            Path("outcome").mkdir(parents=True, exist_ok=True)
+            if filename != "":
+                Path("outcome/{}".format(fontname)).mkdir(parents=True, exist_ok=True)
+                cv2.imwrite("outcome/{}/".format(fontname) + "{}_b.png".format(filename), colour)
+                return change_colour
+            else:
+                cv2.imshow("pic", colour)
+                cv2.waitKey(0)
+                return change_colour
+        else:
+            if filename != "":
+                Path("outcome/{}".format(fontname)).mkdir(parents=True, exist_ok=True)
+                cv2.imwrite("outcome/{}/".format(fontname) + "{}.png".format(filename), stack)
+                return stack
+            else:
+                cv2.imshow("pic", stack)
+                cv2.waitKey(0)
+                return stack
 
     # v_page_array = []
     # v_page_array.append(apply_bkg(final_stack))
