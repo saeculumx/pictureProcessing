@@ -123,6 +123,7 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
         i = 0
         full_array = []
         label_array = []
+        txt_array = []
         full_pic = np.ones([padding[0], size_limit + padding[2] + padding[3], 3]) * 255
         full_pic_bot = np.ones([padding[1], size_limit + padding[2] + padding[3], 3]) * 255
         for ele in array:
@@ -131,6 +132,9 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
             pad_left = np.ones([height, padding[2], 3]) * 255
             pad_right = np.ones([height, padding[3], 3]) * 255
             if not label_array:
+                st = "0,0,{},0,{},{},0,{},{}".format(width,height,width,height,sep_wod_array[0])
+                print("ST",st)
+                txt_array.append(st)
                 label_array.append([[0, 0],
                                     [width, 0],
                                     [height, width],
@@ -138,10 +142,13 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
                 i += 1
             else:
                 lab = label_array[i - 1]
+                st2 = "{},{},{},{},{},{},{},{},{}".format(lab[3][0],lab[3][1],lab[2][0],lab[2][1],lab[2][0] + height,width,0, lab[3][1] + height,sep_wod_array[i])
+                print("ST2:",lab[3][0],",",lab[3][1],",",lab[2][0],",",lab[2][1],",",lab[2][0] + height, ",",width,",",0,",", lab[3][1] + height,",", sep_wod_array[i])
                 label_array.append([lab[3],
                                     lab[2],
                                     [lab[2][0] + height, width],
                                     [0, lab[3][1] + height], sep_wod_array[i]])
+                txt_array.append(st2)
                 i += 1
             if ele.shape[1] < size_limit:
                 width_loss = size_limit - ele.shape[1]
@@ -156,11 +163,11 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
         for fs in full_array:
             full_pic = np.vstack((full_pic, fs))
         full_pic = np.vstack((full_pic, full_pic_bot))
-        print(label_array)
+        print("label:",label_array)
         Path("txt/{}".format(fontname)).mkdir(parents=True, exist_ok=True)
         if filename == "":
             open('txt/outcome.txt', 'w').close()
-            for lbu in label_array:
+            for lbu in txt_array:
                 # lbu = str(lbu).replace('[', '').replace(']', '').replace('\'', '').replace('\"', '')
                 # lbu = str(lbu).replace(" ", "")
                 with open('txt/outcome.txt', 'a') as f:
@@ -171,7 +178,7 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
             return full_pic
         else:
             open("txt/{}/".format(fontname) + "{}.txt".format(filename), 'w').close()
-            for lbu in label_array:
+            for lbu in txt_array:
                 # lbu = str(lbu).replace('[', '').replace(']', '').replace('\'', '').replace('\"', '')
                 # lbu = str(lbu).replace(" ", "")
                 with open("txt/{}/".format(fontname) + "{}.txt".format(filename), 'a') as f:

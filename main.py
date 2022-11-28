@@ -71,7 +71,6 @@ if __name__ == '__main__':
         rand = "".join(random.choices(super_array, k=length))
         return rand
 
-
     def init_automatic():
         for fo in font_arrays:
             i = 1
@@ -86,4 +85,7 @@ if __name__ == '__main__':
 
 
     # generate_cut()
-    init_automatic()
+    Li = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. sunt in culpa qui officia deserunt mollit anim id est laborum."
+    # init_automatic()
+    concatenateImages.words_to_picture(font_arrays[0], Li, font_colour, "",
+                                       1200, padding, "A")
