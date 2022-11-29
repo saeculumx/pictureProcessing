@@ -84,8 +84,17 @@ if __name__ == '__main__':
                 i += 1
 
 
-    # generate_cut()
     Li = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. sunt in culpa qui officia deserunt mollit anim id est laborum."
+
+    def big_word():
+        for fo in font_arrays:
+            i = 1
+            concatenateImages.words_to_picture(fo, Li, font_colour, "bkg.png",
+                                               1200, padding, "B_{}".format(i))
+            concatenateImages.words_to_picture(fo, Li, font_colour, "",
+                                               1200, padding, "B_{}".format(i))
+            i += 1
+
+    # generate_cut()
     # init_automatic()
-    concatenateImages.words_to_picture(font_arrays[0], Li, font_colour, "",
-                                       1200, padding, "A")
+    big_word()
