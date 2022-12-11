@@ -1,0 +1,8 @@
+200,220,1654,220,1654,293,200,293,The use case diagram shows tw
+200,348,1679,348,1679,421,200,421,o roles: user(student) and Algor
+200,476,1630,476,1630,549,200,549,ithm, and 3 use cases : upload i
+200,604,1679,604,1679,677,200,677,mage for recognition, preview r
+200,732,1670,732,1670,805,200,805,esult and save result. Algorithm
+200,860,1692,860,1692,933,200,933, is applied to two cases(upload i
+200,988,1692,988,1692,1061,200,1061,mage for recognition and previe
+200,1116,616,1116,616,1189,200,1189,w result)

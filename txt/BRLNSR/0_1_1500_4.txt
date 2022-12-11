@@ -1,0 +1,8 @@
+200,220,1667,220,1667,293,200,293,The use case diagram shows t
+200,348,1693,348,1693,421,200,421,wo roles: user(student) and Al
+200,476,1658,476,1658,549,200,549,gorithm, and 3 use cases : upl
+200,604,1675,604,1675,677,200,677,oad image for recognition, pr
+200,732,1655,732,1655,805,200,805,eview result and save result. 
+200,860,1657,860,1657,933,200,933,Algorithm is applied to two c
+200,988,1675,988,1675,1061,200,1061,ases(upload image for recogn
+200,1116,1434,1116,1434,1189,200,1189,ition and preview result)

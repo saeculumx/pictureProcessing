@@ -1,0 +1,5 @@
+200,220,3172,220,3172,293,200,293,The use case diagram shows two roles: user(student) a
+200,348,3198,348,3198,421,200,421,nd Algorithm, and 3 use cases : upload image for recog
+200,476,3170,476,3170,549,200,549,nition, preview result and save result. Algorithm is ap
+200,604,3161,604,3161,677,200,677,plied to two cases(upload image for recognition and p
+200,732,981,732,981,805,200,805,review result)

@@ -1,0 +1,9 @@
+100,120,1581,120,1581,193,100,193,The use case diagram shows 
+100,248,1565,248,1565,321,100,321,two roles: user(student) and 
+100,376,1597,376,1597,449,100,449,Algorithm, and 3 use cases : u
+100,504,1574,504,1574,577,100,577,pload image for recognition,
+100,632,1548,632,1548,705,100,705, preview result and save res
+100,760,1538,760,1538,833,100,833,ult. Algorithm is applied to t
+100,888,1561,888,1561,961,100,961,wo cases(upload image for r
+100,1016,1598,1016,1598,1089,100,1089,ecognition and preview resul
+100,1144,182,1144,182,1217,100,1217,t)

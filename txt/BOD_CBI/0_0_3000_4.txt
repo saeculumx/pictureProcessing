@@ -1,0 +1,4 @@
+100,120,3048,120,3048,193,100,193,The use case diagram shows two roles: user(student) and Algorith
+100,248,3099,248,3099,321,100,321,m, and 3 use cases : upload image for recognition, preview result 
+100,376,3070,376,3070,449,100,449,and save result. Algorithm is applied to two cases(upload image f
+100,504,1664,504,1664,577,100,577,or recognition and preview result)

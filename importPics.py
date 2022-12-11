@@ -17,7 +17,6 @@ def img_bw(path, capital):
     """
 
     """Grey Picture"""
-    """Grey Picture"""
 
     image_r = Image.open(path)
     b = image_r.filename.split("/")[-1]

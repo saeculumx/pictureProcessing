@@ -36,7 +36,7 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
     number_array = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
     def split_word(word_str):
-        print(">>CON<< Word: ", word_str, " | ", fontname, " | ", len(word_str))
+        #print(">>CON<< Word: ", word_str, " | ", fontname, " | ", len(word_str))
         for w in word_str:
             word_array.append(w)
             if w == " ":
@@ -120,6 +120,8 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
         return stack
 
     def v_page_stack(array, sep_wod_array):
+        out_path = "txt"
+        #out_path = "D:/py/Scene_Text_Spotting/dataset/my_data/label"
         i = 0
         full_array = []
         label_array = []
@@ -132,22 +134,28 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
             pad_left = np.ones([height, padding[2], 3]) * 255
             pad_right = np.ones([height, padding[3], 3]) * 255
             if not label_array:
-                st = "0,0,{},0,{},{},0,{},{}".format(width,height,width,height,sep_wod_array[0])
-                print("ST",st)
+                st = "{},{},{},{},{},{},{},{},{}".format(padding[0],padding[1]+20,
+                                                         padding[0]+width,padding[1]+20,
+                                                         padding[0]+width,padding[1]+height-35,
+                                                         padding[0],padding[1]+height-35,sep_wod_array[0])
+                # print("ST",st)
                 txt_array.append(st)
-                label_array.append([[0, 0],
-                                    [width, 0],
-                                    [height, width],
-                                    [0, height], sep_wod_array[0]])
+                label_array.append([[padding[0],padding[1]],
+                                    [padding[0]+width,padding[1]],
+                                    [padding[0]+width,padding[1]+height],
+                                    [padding[0],padding[1]+height], sep_wod_array[0]])
                 i += 1
             else:
                 lab = label_array[i - 1]
-                st2 = "{},{},{},{},{},{},{},{},{}".format(lab[3][0],lab[3][1],lab[2][0],lab[2][1],lab[2][0] + height,width,0, lab[3][1] + height,sep_wod_array[i])
-                print("ST2:",lab[3][0],",",lab[3][1],",",lab[2][0],",",lab[2][1],",",lab[2][0] + height, ",",width,",",0,",", lab[3][1] + height,",", sep_wod_array[i])
+                st2 = "{},{},{},{},{},{},{},{},{}".format(lab[3][0],lab[3][1]+20,
+                                                          lab[3][0]+width,lab[3][1]+20,
+                                                          lab[3][0]+width,lab[3][1]-35 + height,
+                                                          lab[3][0], lab[3][1]-35 + height,sep_wod_array[i])
+                # print("ST2:",lab[3][0],",",lab[3][1],",",lab[2][0],",",lab[2][1],",",lab[2][0] + height, ",",width,",",0,",", lab[3][1] + height,",", sep_wod_array[i])
                 label_array.append([lab[3],
-                                    lab[2],
-                                    [lab[2][0] + height, width],
-                                    [0, lab[3][1] + height], sep_wod_array[i]])
+                                    [lab[3][0]+width,lab[3][1]],
+                                    [lab[3][0]+width,lab[3][1] + height],
+                                    [lab[3][0], lab[3][1] + height], sep_wod_array[i]])
                 txt_array.append(st2)
                 i += 1
             if ele.shape[1] < size_limit:
@@ -157,31 +165,31 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
                 full_array.append(full)
             else:
                 cropped = ele[0:ele.shape[0], 0:size_limit]
-                print(cropped.shape)
+                #print(cropped.shape)
                 cropped = np.hstack((pad_left, cropped, pad_right))
                 full_array.append(cropped)
         for fs in full_array:
             full_pic = np.vstack((full_pic, fs))
         full_pic = np.vstack((full_pic, full_pic_bot))
-        print("label:",label_array)
-        Path("txt/{}".format(fontname)).mkdir(parents=True, exist_ok=True)
+        #("label:",label_array)
+        Path("{}/{}".format(out_path,fontname)).mkdir(parents=True, exist_ok=True)
         if filename == "":
-            open('txt/outcome.txt', 'w').close()
+            open('{}/outcome.txt'.format(out_path), 'w').close()
             for lbu in txt_array:
                 # lbu = str(lbu).replace('[', '').replace(']', '').replace('\'', '').replace('\"', '')
                 # lbu = str(lbu).replace(" ", "")
-                with open('txt/outcome.txt', 'a') as f:
+                with open('{}/outcome.txt'.format(out_path), 'a') as f:
                     f.write(str(lbu))
                     f.write('\n')
             # cv2.imshow("full.png", full_pic)
             # cv2.waitKey(0)
             return full_pic
         else:
-            open("txt/{}/".format(fontname) + "{}.txt".format(filename), 'w').close()
+            open("{}/{}/".format(out_path,fontname) + "{}.txt".format(filename), 'w').close()
             for lbu in txt_array:
                 # lbu = str(lbu).replace('[', '').replace(']', '').replace('\'', '').replace('\"', '')
                 # lbu = str(lbu).replace(" ", "")
-                with open("txt/{}/".format(fontname) + "{}.txt".format(filename), 'a') as f:
+                with open("{}/{}/".format(out_path,fontname) + "{}.txt".format(filename), 'a') as f:
                     f.write(str(lbu))
                     f.write('\n')
             # cv2.imshow("full.png", full_pic)
@@ -191,7 +199,7 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
     # cv2.imshow('image', final_stack)
     # cv2.waitKey(0)
     def multi_init(stack):
-        print("size limit : ", size_limit)
+        #print("size limit : ", size_limit)
         size_multiplier = ceil(stack.shape[1] / size_limit)
         indicators = []
         sum = 0
@@ -234,17 +242,17 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
         else:
             sep_array.append(picture_array)
             sep_wod_array.append(word)
-        print("len: sep_array: ", len(sep_array))
-        print("indicators: ", indicators)
-        print("stack_sum: ", fsum, stack.shape[1])
-        print("size_multiplier: ", size_multiplier)
-        print("words: ", sep_wod_array)
+        #print("len: sep_array: ", len(sep_array))
+        #print("indicators: ", indicators)
+        #print("stack_sum: ", fsum, stack.shape[1])
+        #print("size_multiplier: ", size_multiplier)
+        #print("words: ", sep_wod_array)
 
         final_pic_array = []
         i = 0
         for sep in sep_array:
             pic = pic_process(sep, sep_wod_array[i])
-            print("Shape: ", pic.shape[1])
+            # print("Shape: ", pic.shape[1])
             final_pic_array.append(pic)
             # cv2.imshow("pic", pic)
             # cv2.waitKey(0)
@@ -252,6 +260,8 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
         return v_page_stack(final_pic_array, sep_wod_array)
 
     def apply_bkg(stack):
+        out_path = "outcome"
+        #out_path = "D:/py/Scene_Text_Spotting/dataset/my_data/image"
         if bkg_src != "":
             change_colour = Image.fromarray(stack.astype('uint8'), 'RGB')
             cg_width, cg_height = change_colour.size
@@ -261,7 +271,7 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
                 dim = (cg_width, cg_height)
                 for_process = cv2.resize(for_process, dim, interpolation=cv2.INTER_AREA)
                 bkg_src_p = Image.fromarray(np.uint8(for_process))
-                print("Background picture is not big enough, required ", cg_width, cg_height)
+                #print("Background picture is not big enough, required ", cg_width, cg_height)
             for wd in range(cg_width):
                 for hd in range(cg_height):
                     current_color = change_colour.getpixel((wd, hd))
@@ -273,10 +283,10 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
             colour = cv2.cvtColor(np.array(change_colour), cv2.COLOR_RGB2BGR)
             # cv2.imshow("pic", colour)
             # cv2.waitKey(0)
-            Path("outcome").mkdir(parents=True, exist_ok=True)
+            Path(out_path).mkdir(parents=True, exist_ok=True)
             if filename != "":
-                Path("outcome/{}".format(fontname)).mkdir(parents=True, exist_ok=True)
-                cv2.imwrite("outcome/{}/".format(fontname) + "{}_b.png".format(filename), colour)
+                Path("{}/{}".format(out_path,fontname)).mkdir(parents=True, exist_ok=True)
+                cv2.imwrite("{}/{}/".format(out_path,fontname) + "{}_b.png".format(filename), colour)
                 return change_colour
             else:
                 cv2.imshow("pic", colour)
@@ -284,8 +294,8 @@ def words_to_picture(font, word, font_colour, bkg_src, size_limit, padding, file
                 return change_colour
         else:
             if filename != "":
-                Path("outcome/{}".format(fontname)).mkdir(parents=True, exist_ok=True)
-                cv2.imwrite("outcome/{}/".format(fontname) + "{}.png".format(filename), stack)
+                Path("{}/{}".format(out_path,fontname)).mkdir(parents=True, exist_ok=True)
+                cv2.imwrite("{}/{}/".format(out_path,fontname) + "{}.png".format(filename), stack)
                 return stack
             else:
                 cv2.imshow("pic", stack)

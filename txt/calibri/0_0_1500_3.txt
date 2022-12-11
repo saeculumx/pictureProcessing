@@ -1,0 +1,8 @@
+100,120,1554,120,1554,193,100,193,The use case diagram shows tw
+100,248,1579,248,1579,321,100,321,o roles: user(student) and Algor
+100,376,1530,376,1530,449,100,449,ithm, and 3 use cases : upload i
+100,504,1579,504,1579,577,100,577,mage for recognition, preview r
+100,632,1570,632,1570,705,100,705,esult and save result. Algorithm
+100,760,1592,760,1592,833,100,833, is applied to two cases(upload i
+100,888,1592,888,1592,961,100,961,mage for recognition and previe
+100,1016,516,1016,516,1089,100,1089,w result)

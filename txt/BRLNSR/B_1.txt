@@ -1,9 +1,0 @@
-0,0,1172,0,128,1172,0,128,Lorem ipsum dolor sit a
-0,128,128,1172,256,1168,0,256,met, consectetur adipis
-0,256,256,1168,384,1156,0,384,cing elit, sed do eiusmo
-0,384,384,1156,512,1194,0,512,d tempor incididunt ut l
-0,512,512,1194,640,1184,0,640,abore et dolore magna 
-0,640,640,1184,768,1158,0,768,aliqua. Ut enim ad mini
-0,768,768,1158,896,1170,0,896,m veniam. sunt in culpa
-0,896,896,1170,1024,1197,0,1024, qui officia deserunt mo
-0,1024,1024,1197,1152,1164,0,1152,llit anim id est laborum

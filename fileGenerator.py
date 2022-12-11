@@ -13,11 +13,11 @@ def generate_pics(height, width, text, font, f_size, capital, form=None):
     This Function generate pictures with english letters
     :param form: format either punc/number
     :param capital: if the word is capital
-    :param height: height og the pic
-    :param width: width of the pic
-    :param text: text of the pic
-    :param font: font of the pic
-    :param f_size: size of the pic
+    :param height: height of the picture
+    :param width: width of the picture
+    :param text: text of the picture
+    :param font: font of the picture
+    :param f_size: size of the picture
     :return: a picture with a text
     """
     f_size = f_size

@@ -1,3 +1,4 @@
+import math
 import random
 import string
 
@@ -87,14 +88,40 @@ if __name__ == '__main__':
     Li = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam. sunt in culpa qui officia deserunt mollit anim id est laborum."
 
     def big_word():
-        for fo in font_arrays:
-            i = 1
-            concatenateImages.words_to_picture(fo, Li, font_colour, "bkg.png",
-                                               1200, padding, "B_{}".format(i))
-            concatenateImages.words_to_picture(fo, Li, font_colour, "",
-                                               1200, padding, "B_{}".format(i))
-            i += 1
+        image_label_list = []
+        file = open("text.txt", "r").readlines()
+        padding_list = [[100, 100, 100, 100],[200, 200, 200, 200]]
+        size_list = [1500,3000]
+        path = "dataset/my_data"
+        total = len(file)*len(font_arrays)*len(padding_list)*len(size_list)*5
+        print_p = math.ceil(total / 20)
+        print("total:{}".format(total))
+        for l_i,line_text in enumerate(file):
+            line_text = line_text.split("\n")[0]
+            for fo in font_arrays:
+                f_name = fo.split(".")[0]
+                for p_i,padding in enumerate(padding_list):
+                    for s_i,size in enumerate(size_list):
+                        concatenateImages.words_to_picture(fo, line_text, (0, 0, 0), "bk/bk_white.png",
+                                                           size, padding, "{}_{}_{}_0".format(l_i,p_i,size))
+                        concatenateImages.words_to_picture(fo, line_text, (255, 255, 255), "bk/bk_black.png",
+                                                           size, padding, "{}_{}_{}_1".format(l_i,p_i,size))
+                        concatenateImages.words_to_picture(fo, line_text, (166, 236, 253), "bk/bk_yellow.png",
+                                                           size, padding, "{}_{}_{}_2".format(l_i,p_i,size))
+                        concatenateImages.words_to_picture(fo, line_text, (251, 255, 140), "bk/bk_blue.png",
+                                                           size, padding, "{}_{}_{}_3".format(l_i,p_i,size))
+                        concatenateImages.words_to_picture(fo, line_text, (255, 255, 255), "bk/bk_0.png",
+                                                           size, padding, "{}_{}_{}_4".format(l_i,p_i,size))
+                        for n in range(5):
+                            image_label_list.append("{}/image/{}/{}_{}_{}_{}_b.png {}/label/{}/{}_{}_{}_{}.txt\n".format(path,f_name,l_i,p_i,size,n,path,f_name,l_i,p_i,size,n))
 
+                            if int(len(image_label_list) / print_p) * print_p == len(image_label_list) or len(image_label_list) == total:
+                                print("{}/{}".format(len(image_label_list), total))
+
+        link_file = open("D:/py/Scene_Text_Spotting/dataset/my_data/image_label_list.txt", "w")
+        for image_label in image_label_list:
+            link_file.write(image_label)
+        link_file.close()
     # generate_cut()
     # init_automatic()
     big_word()
